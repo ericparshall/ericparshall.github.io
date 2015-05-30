@@ -1,1 +1,30 @@
-<html><body>Hello</body></html>
+---
+layout: pages
+---
+<div>
+  <h1>Eric Parshall <small>Software Developer</small></h1>
+</div>
+
+{% for post in site.posts %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        <i>{{ post.date | date: '%B %d, %Y' }}</i>
+      </div>
+      <div class="panel-body">
+        {{ post.excerpt }}
+        <a href="{{ post.url }}">continue reading</a>
+        <br>
+      </div>
+      <div class="panel-footer">
+        Tags:
+        {% for tag in post.tags %}
+        <span class="label label-default">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}

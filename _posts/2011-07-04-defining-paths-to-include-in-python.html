@@ -1,0 +1,24 @@
+---
+title: Defining the paths to include in a Python script on the Google App Engine
+permalink: /2011/07/defining-paths-to-include-in-python.html
+tags:
+  - Google App Engine
+  - Python
+---
+
+<p>
+  I'm pretty new to the Python programming language, as well as the Google App Engine.  One frustration that I experienced was not knowing how I could store my classes in separate directories in order to organize my code and ensure that I could reuse the same classes without storing everything in the same directory.  Google's documentation said something about the 'includes' declaration in the app.yaml file but, after researching, I didn't think it did exactly what I wanted.  I got my best hint from this page on <a href="http://code.google.com/appengine/kb/commontasks.html#import">Google's knowledge base</a>
+</p>
+
+<p>
+  This explains how to import your own version of a module that is included with Google App Engine by default.  I found it helpful for adding my own list of directories to the include path as follows:
+</p>
+<pre>
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), "lib", "handlers"))
+</pre>
+
+<p>
+  This uses the absolute path of my directory of the current running script and adds /lib/handlers/.  This will allow me to store any handler classes in this directory.  It is important to note that the "os.path.join" method will automatically compile the directory path using the OS specific directory separating character.  For example, it will insert "\\" for windows and "/" for linux.
+</p>

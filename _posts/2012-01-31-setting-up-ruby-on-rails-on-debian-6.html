@@ -1,0 +1,68 @@
+---
+title: Setting up Ruby on Rails on Debian 6
+permalink: /2012/01/setting-up-ruby-on-rails-on-debian-6.html
+tags:
+  - debian
+  - rails
+  - ruby
+  - zlib
+---
+<p>
+  While getting my system set up to develop for Ruby on Rails on Debian 6 I encountered this error after running "gem install rails":
+</p>
+
+<pre>
+ERROR: Loading command: install (LoadError)
+no such file to load -- zlib
+ERROR: While executing gem ... (NameError)
+uninitialized constant Gem::Commands::InstallCommand
+</pre>
+
+<p>
+  I found the fix I needed at http://ubuntuforums.org/showthread.php?t=1494997, specifically: "Try installing libzlib-ruby from apt-get."
+</p>
+
+<p>
+  I already had installed Ruby 1.9.3 using RVM. Following advice on another post I first removed ruby with the command "rvm remove 1.9.3" and then installed zlib with the command "sudo apt-get install libzlib-ruby" and then re-installed ruby with the command "rvm install 1.9.3 --default". I was then able to successfully install rails with "gem install rails".
+</p>
+
+<p>
+  However, I proceeded to receive this message after using the command "bundle install":
+</p>
+
+<pre>
+ERROR:  Error installing pg:
+ERROR: Failed to build gem native extension.
+</pre>
+
+<p>
+  I found the solution to this problem at http://stackoverflow.com/questions/6040583/unable-to-install-pg-gem-on-ubuntu, specifically:
+</p>
+
+<pre>
+I had tried gem install libpq-dev
+but I got:
+Can't find the 'libpq-fe.h header
+*** extconf.rb failed ***
+but I found that sudo (which I try to avoid using with RoR) worked with:
+sudo apt-get install libpq-dev
+then I could do
+gem install pg
+without issue.
+</pre>
+
+<p>
+  So I installed libpq-dev using "sudo apt-get install libpq-dev" and then "gem install pg".  I was then able to do "bundle install" on my rails app.
+</p>
+
+<p>So the general steps are:</p>
+<ol>
+  <li>Install RVM</li>
+  <li>sudo apt-get install libzlib-ruby</li>
+  <li>rvm install 1.9.3 --default</li>
+  <li>gem install rails</li>
+  <li>sudo apt-get install libpq-dev</li>
+  <li>gem install pg</li>
+</ol>
+
+<p>After this I was up and running. Hopes this helps!</p>

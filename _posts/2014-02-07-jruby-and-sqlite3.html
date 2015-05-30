@@ -1,0 +1,41 @@
+---
+title: JRuby and SQLite3
+permalink: /2014/02/jruby-and-sqlite3.html
+tags:
+  - activerecord
+  - jruby
+  - sqlite
+---
+
+<p>
+  I had trouble finding a good resource for how to query an SQLite database with JRuby, so I humbly submit this to the google indexing engine:
+</p>
+
+<pre>
+rvm use jruby-1.7.3
+gem install 'jdbc/sqlite3'
+gem install activerecord-jdbcsqlite3-adapter
+</pre>
+
+<p>
+  Then the code:
+</p>
+<pre>
+require 'jdbc/sqlite3'
+require 'java'
+require 'activerecord-jdbcsqlite3-adapter'
+
+Jdbc::SQLite3.load_driver
+ActiveRecord::Base.establish_connection(
+:adapter => "jdbc",
+:driver => "org.sqlite.JDBC",
+:url => "jdbc:sqlite:/Users/ericparshall/test.sqlite",
+:connection_alive_sql => "SELECT COUNT(*) from test_table"
+)
+
+puts ActiveRecord::Base.connection.execute("Select * from test_table").count
+</pre>
+
+<p>
+  Note that I added the :connection_alive_sql to provide it a query to run in order to validate the connection.
+</p>

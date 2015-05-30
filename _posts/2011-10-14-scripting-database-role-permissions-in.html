@@ -1,0 +1,40 @@
+---
+title: Scripting Database Role Permissions in SQL Server
+permalink: /2011/10/scripting-database-role-permissions-in.html
+tags:
+  - SQL Server
+  - permissions
+  - roles
+---
+<p>
+  Here is a script I put together for easily scripting existing permissions for a database role in SQL Server 2008.  I got the original code for querying permissions <a href="http://stackoverflow.com/questions/2022011/view-all-securables-for-roles-in-sql-server-database">at StackOverflow</a>
+</p>
+
+<p>This only works for basic permissions so you'll need to tweak it further if you want it to script column permissions, etc.</p>
+
+<pre>
+DECLARE @RoleName NVARCHAR(128)
+SET @RoleName = 'NameOfRole'
+
+SELECT
+'GRANT ' + Perms.permission_name
++ ' ON OBJECT::'
++ Perms.[Schema] + '.' + Perms.ObjectName
++ ' TO ' + Perms.RoleName + ';'
+FROM (
+ SELECT
+   [Schema] = OBJECT_SCHEMA_NAME(major_id)
+  ,[ObjectName] = OBJECT_NAME(major_id)
+  ,[RoleName] = USER_NAME(grantee_principal_id)
+  ,permission_name
+ FROM sys.database_permissions p
+ WHERE p.class = 1
+ AND OBJECTPROPERTY(major_id, 'IsMSSHipped') = 0
+
+) Perms
+WHERE [RoleName] = @RoleName
+ORDER BY
+  Perms.[Schema]
+ ,Perms.ObjectName
+ ,Perms.permission_name
+</pre>

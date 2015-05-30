@@ -1,0 +1,15 @@
+timezone: America/Denver
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "posts"
+      author: "Eric Parshall"
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "pages"
